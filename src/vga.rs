@@ -260,13 +260,32 @@ impl VgaBufferWriter {
         self
     }
 
-    pub fn foreground(&mut self, color: Color) -> &mut Self {
+    pub fn set_foreground(&mut self, color: Color) -> &mut Self {
         self.foreground = color;
         self
     }
 
-    pub fn background(&mut self, color: Color) -> &mut Self {
+    pub fn set_background(&mut self, color: Color) -> &mut Self {
         self.background = color;
+        self
+    }
+
+    pub fn colors(&self) -> (Color, Color) {
+        (self.foreground, self.background)
+    }
+
+    pub fn set_colors(&mut self, (foreground, background): (Color, Color)) -> &mut Self {
+        self.foreground = foreground;
+        self.background = background;
+        self
+    }
+
+    pub fn set_pos_x(&mut self, x: usize) -> &mut Self {
+        if x >= BUFFER_WIDTH {
+            panic!("x is out of bounds");
+        }
+
+        self.pos_x = x;
         self
     }
 }

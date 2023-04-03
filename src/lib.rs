@@ -4,7 +4,9 @@
 mod cpu;
 #[macro_use]
 mod vga;
+mod misc;
 
+use crate::misc::banner;
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -13,8 +15,8 @@ fn panic(info: &PanicInfo) -> ! {
         println!();
 
         vga::WRITER
-            .foreground(vga::Color::White)
-            .background(vga::Color::Red)
+            .set_foreground(vga::Color::White)
+            .set_background(vga::Color::Red)
             .write(
                 "================================================================================",
             );
@@ -33,6 +35,7 @@ fn panic(info: &PanicInfo) -> ! {
 #[no_mangle]
 pub unsafe extern "C" fn _rust_main() {
     vga::WRITER.clear_screen();
+    banner::print_banner();
 
     println!(
         "Running on CPU: {:?} ({:?})\n",
@@ -45,12 +48,12 @@ pub unsafe extern "C" fn _rust_main() {
         let bg: vga::Color = row.into();
         let fg = bg.inverse();
 
-        vga::WRITER.foreground(fg).background(bg);
+        vga::WRITER.set_foreground(fg).set_background(bg);
         print!(" {:?} + {:?} ", fg, bg);
     }
     vga::WRITER
-        .foreground(vga::Color::White)
-        .background(vga::Color::Black)
+        .set_foreground(vga::Color::White)
+        .set_background(vga::Color::Black)
         .write("\n");
 
     todo!("do things");
