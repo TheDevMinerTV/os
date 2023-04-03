@@ -1,4 +1,5 @@
 mod area_frame_alloc;
+pub mod paging;
 
 pub use area_frame_alloc::AreaFrameAllocator;
 
