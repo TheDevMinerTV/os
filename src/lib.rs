@@ -4,6 +4,7 @@
 mod cpu;
 #[macro_use]
 mod vga;
+#[macro_use]
 mod misc;
 
 use crate::misc::banner;
@@ -37,13 +38,13 @@ pub unsafe extern "C" fn _rust_main() {
     vga::WRITER.clear_screen();
     banner::print_banner();
 
-    println!(
-        "Running on CPU: {:?} ({:?})\n",
+    kinfo!(
+        "Running on CPU: {:?} ({:?})",
         cpu::basic_cpuid(),
         cpu::advanced_cpuid()
     );
 
-    println!("Color test:");
+    kinfo!("Color test:");
     for row in 0..16 {
         let bg: vga::Color = row.into();
         let fg = bg.inverse();
