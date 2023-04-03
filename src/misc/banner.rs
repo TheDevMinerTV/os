@@ -19,9 +19,7 @@ pub fn print_banner() {
     unsafe {
         let colors = vga::WRITER.colors();
 
-        vga::WRITER
-            .set_foreground(Color::Pink)
-            .set_background(Color::Black);
+        vga::WRITER.set_colors((Color::Pink, Color::Black));
 
         println!();
         for line in BANNER.iter() {
