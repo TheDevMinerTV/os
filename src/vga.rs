@@ -1,5 +1,20 @@
 use core::fmt;
 
+pub static mut WRITER: VgaBufferWriter = VgaBufferWriter::new();
+
+macro_rules! println {
+    () => (print!(concat!("\n")));
+    ($fmt:expr) => (print!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
+}
+
+macro_rules! print {
+    ($($arg:tt)*) => ({
+        use core::fmt::Write;
+        $crate::vga::WRITER.write_fmt(format_args!($($arg)*)).unwrap();
+    });
+}
+
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
