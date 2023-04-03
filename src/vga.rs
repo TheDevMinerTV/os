@@ -259,8 +259,6 @@ impl VgaBufferWriter {
             );
         }
 
-        // self.new_line();
-
         self
     }
 
