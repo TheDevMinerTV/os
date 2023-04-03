@@ -58,7 +58,7 @@ impl core::fmt::Debug for AdvancedCPUIDInfo {
         )?;
 
         if self.family == 6 || self.family == 15 {
-            write!(f, " (" )?;
+            write!(f, " (")?;
 
             let a = self.extended_family << 4 + self.family;
 
