@@ -10,9 +10,16 @@ macro_rules! println {
 
 macro_rules! print {
     ($($arg:tt)*) => ({
-        use core::fmt::Write;
-        $crate::vga::WRITER.write_fmt(format_args!($($arg)*)).unwrap();
-    });
+        $crate::vga::print(format_args!($($arg)*));
+    })
+}
+
+pub fn print(args: fmt::Arguments) {
+    use core::fmt::Write;
+
+    unsafe {
+        WRITER.write_fmt(args).unwrap();
+    }
 }
 
 #[allow(dead_code)]
