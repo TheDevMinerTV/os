@@ -41,7 +41,6 @@ impl Color {
             Color::Pink => Color::Black,
             Color::Yellow => Color::Black,
             Color::White => Color::Black,
-            _ => Color::White,
         }
     }
 }
