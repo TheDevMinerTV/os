@@ -22,6 +22,54 @@ pub enum Color {
     White = 15,
 }
 
+impl Color {
+    pub fn inverse(&self) -> Color {
+        match self {
+            Color::Black => Color::White,
+            Color::Blue => Color::White,
+            Color::Green => Color::White,
+            Color::Cyan => Color::Black,
+            Color::Red => Color::White,
+            Color::Magenta => Color::White,
+            Color::Brown => Color::White,
+            Color::LightGray => Color::Black,
+            Color::DarkGray => Color::White,
+            Color::LightBlue => Color::Black,
+            Color::LightGreen => Color::Black,
+            Color::LightCyan => Color::Black,
+            Color::LightRed => Color::Black,
+            Color::Pink => Color::Black,
+            Color::Yellow => Color::Black,
+            Color::White => Color::Black,
+            _ => Color::White,
+        }
+    }
+}
+
+impl From<u8> for Color {
+    fn from(i: u8) -> Color {
+        match i {
+            0 => Color::Black,
+            1 => Color::Blue,
+            2 => Color::Green,
+            3 => Color::Cyan,
+            4 => Color::Red,
+            5 => Color::Magenta,
+            6 => Color::Brown,
+            7 => Color::LightGray,
+            8 => Color::DarkGray,
+            9 => Color::LightBlue,
+            10 => Color::LightGreen,
+            11 => Color::LightCyan,
+            12 => Color::LightRed,
+            13 => Color::Pink,
+            14 => Color::Yellow,
+            15 => Color::White,
+            _ => Color::White,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[repr(transparent)]
 struct ColorCode(u8);

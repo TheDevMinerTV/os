@@ -43,5 +43,14 @@ pub unsafe extern "C" fn _rust_main() {
     )
     .unwrap();
 
+    VGA_BUFFER_WRITER.write("Color test:\n");
+    for row in 0..16 {
+        let bg: vga::Color = row.into();
+        let fg = bg.inverse();
+
+        VGA_BUFFER_WRITER.foreground(fg).background(bg);
+        write!(VGA_BUFFER_WRITER, "{:?} + {:?}\n", fg, bg).unwrap();
+    }
+
     todo!("do things");
 }
