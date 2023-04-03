@@ -8,13 +8,18 @@ macro_rules! println {
     ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
 }
 
+pub(crate) use println;
+
 macro_rules! print {
     ($($arg:tt)*) => ({
-        $crate::vga::print(format_args!($($arg)*));
+        $crate::vga::_print(format_args!($($arg)*));
     })
 }
 
-pub fn print(args: fmt::Arguments) {
+pub(crate) use print;
+
+#[doc(hidden)]
+pub(crate) fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
 
     unsafe {

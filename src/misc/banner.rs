@@ -1,4 +1,4 @@
-use crate::vga::{self, Color};
+use crate::vga::{self, print, println, Color};
 
 const BANNER: [[u8; 19]; 3] = [
     [

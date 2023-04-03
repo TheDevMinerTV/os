@@ -2,13 +2,14 @@
 #![no_main]
 
 mod cpu;
-#[macro_use]
-mod vga;
-#[macro_use]
 mod misc;
+mod vga;
 
 use crate::misc::banner;
 use core::panic::PanicInfo;
+
+use misc::klog::kinfo;
+use vga::{print, println};
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {

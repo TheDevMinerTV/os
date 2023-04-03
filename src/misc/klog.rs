@@ -6,3 +6,5 @@ macro_rules! kinfo {
         println!(concat!("[INFO] ", $fmt), $($arg)*);
     };
 }
+
+pub(crate) use kinfo;
