@@ -21,4 +21,5 @@ boot: iso
   qemu-system-i386 -cdrom os.iso -m 64M -display sdl -cpu pentium3-v1
 
 clean:
-  rm -f *.o *.bin iso/os.bin os.iso tmp
+  rm -rf *.o *.bin iso/os.bin os.iso tmp
+  cargo clean
