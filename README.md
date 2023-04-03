@@ -4,7 +4,7 @@
 
 ```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-sudo apt install xorriso grub-common qemu grub-pc binutils-i686-linux-gnu qemu-system-x86
+sudo apt install xorriso grub-common qemu grub-pc binutils-i686-linux-gnu qemu-system-x86 nasm
 cargo install just
 rustup component add rust-src
 ```
