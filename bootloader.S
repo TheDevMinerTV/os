@@ -4,9 +4,14 @@ section .text
 bits 32
 start:
     mov esp, stack_top
+    push ebx
+    push eax
 
     extern _rust_main
     call _rust_main
+
+    pop eax
+    pop ebx
 
     hlt
 
