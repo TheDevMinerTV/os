@@ -13,6 +13,16 @@ rustup component add rust-src
 
 - https://os.phil-opp.com/entering-longmode/#cpuid-check
 
+## Resources
+
+- Paging
+  - https://wiki.osdev.org/Paging
+  - https://en.wikipedia.org/wiki/Control_register
+- CPUID
+  - https://en.wikipedia.org/wiki/CPUID
+  - https://www.felixcloutier.com/x86/cpuid
+  - https://c9x.me/x86/html/file_module_x86_id_45.html
+
 ## Bye
 
 ```
