@@ -39,7 +39,7 @@ pub fn clear_screen() {
     unsafe { WRITER.clear_screen() }
 }
 
-pub fn set_coords((x, y): (usize, usize)) -> &'static mut VgaBufferWriter {
+pub fn set_coords(x: usize, y: usize) -> &'static mut VgaBufferWriter {
     unsafe { WRITER.set_coords(x, y) }
 }
 

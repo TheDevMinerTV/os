@@ -21,8 +21,8 @@ pub fn print_banner() {
     vga::set_colors((Color::Pink, Color::Black));
 
     println!();
-    for line in BANNER.iter() {
-        vga::set_coords((31, 0));
+    for (y, line) in BANNER.iter().enumerate() {
+        vga::set_coords(31, y);
 
         for &byte in line.iter() {
             print!("{}", byte as char)

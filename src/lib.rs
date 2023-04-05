@@ -126,8 +126,8 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         vga::set_colors((fg, bg));
         print!(" {:?} + {:?} ", fg, bg);
     }
-
     vga::set_colors((vga::Color::White, vga::Color::Black));
+    println!();
 
     todo!("do things");
 }
