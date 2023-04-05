@@ -16,23 +16,21 @@ const BANNER: [[u8; 19]; 3] = [
 ];
 
 pub fn print_banner() {
-    unsafe {
-        let colors = vga::colors();
+    let colors = vga::colors();
 
-        vga::set_colors((Color::Pink, Color::Black));
+    vga::set_colors((Color::Pink, Color::Black));
 
-        println!();
-        for line in BANNER.iter() {
-            vga::set_coords((31, 0));
+    println!();
+    for line in BANNER.iter() {
+        vga::set_coords((31, 0));
 
-            for &byte in line.iter() {
-                print!("{}", byte as char)
-            }
-
-            println!();
+        for &byte in line.iter() {
+            print!("{}", byte as char)
         }
-        println!();
 
-        vga::set_colors(colors);
-    };
+        println!();
+    }
+    println!();
+
+    vga::set_colors(colors);
 }
