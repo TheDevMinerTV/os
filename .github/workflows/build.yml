@@ -1,0 +1,28 @@
+# github workflow for running `just iso` on push
+
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: rust-src
+
+      - uses: extractions/setup-just@v1
+
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y xorriso grub-common qemu grub-pc binutils-i686-linux-gnu nasm
+
+      - name: Build ISO
+        run: just iso
