@@ -17,13 +17,13 @@ const BANNER: [[u8; 19]; 3] = [
 
 pub fn print_banner() {
     unsafe {
-        let colors = vga::WRITER.colors();
+        let colors = vga::colors();
 
-        vga::WRITER.set_colors((Color::Pink, Color::Black));
+        vga::set_colors((Color::Pink, Color::Black));
 
         println!();
         for line in BANNER.iter() {
-            vga::WRITER.set_pos_x(31);
+            vga::set_coords((31, 0));
 
             for &byte in line.iter() {
                 print!("{}", byte as char)
@@ -33,6 +33,6 @@ pub fn print_banner() {
         }
         println!();
 
-        vga::WRITER.set_colors(colors);
+        vga::set_colors(colors);
     };
 }

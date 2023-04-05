@@ -1,6 +1,6 @@
 use core::fmt;
 
-pub static mut WRITER: VgaBufferWriter = VgaBufferWriter::new();
+static mut WRITER: VgaBufferWriter = VgaBufferWriter::new();
 
 macro_rules! println {
     () => (print!(concat!("\n")));
@@ -25,6 +25,22 @@ pub(crate) fn _print(args: fmt::Arguments) {
     unsafe {
         WRITER.write_fmt(args).unwrap();
     }
+}
+
+pub fn colors() -> (Color, Color) {
+    unsafe { WRITER.colors() }
+}
+
+pub fn set_colors(colors: (Color, Color)) -> &'static mut VgaBufferWriter {
+    unsafe { WRITER.set_colors(colors) }
+}
+
+pub fn clear_screen() {
+    unsafe { WRITER.clear_screen() }
+}
+
+pub fn set_coords((x, y): (usize, usize)) -> &'static mut VgaBufferWriter {
+    unsafe { WRITER.set_coords(x, y) }
 }
 
 #[allow(dead_code)]
@@ -270,16 +286,6 @@ impl VgaBufferWriter {
         self
     }
 
-    pub fn set_foreground(&mut self, color: Color) -> &mut Self {
-        self.foreground = color;
-        self
-    }
-
-    pub fn set_background(&mut self, color: Color) -> &mut Self {
-        self.background = color;
-        self
-    }
-
     pub fn colors(&self) -> (Color, Color) {
         (self.foreground, self.background)
     }
@@ -290,12 +296,17 @@ impl VgaBufferWriter {
         self
     }
 
-    pub fn set_pos_x(&mut self, x: usize) -> &mut Self {
+    pub fn set_coords(&mut self, x: usize, y: usize) -> &mut Self {
         if x >= BUFFER_WIDTH {
             panic!("x is out of bounds");
         }
 
+        if y >= BUFFER_HEIGHT {
+            panic!("y is out of bounds");
+        }
+
         self.pos_x = x;
+        self.pos_y = y;
         self
     }
 }

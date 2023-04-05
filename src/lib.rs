@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![feature(abi_x86_interrupt)]
 
 mod cpu;
 mod mem;
@@ -14,30 +15,21 @@ use vga::{print, println};
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    unsafe {
-        println!();
+    println!();
 
-        vga::WRITER
-            .set_foreground(vga::Color::White)
-            .set_background(vga::Color::Red)
-            .write(
-                "================================================================================",
-            );
+    vga::set_colors((vga::Color::White, vga::Color::Red));
 
-        println!("KERNEL PANIC:");
-        println!("{}", info);
-
-        vga::WRITER.fill_line().write(
-            "================================================================================",
-        );
-    };
+    println!("================================================================================");
+    println!("KERNEL PANIC:");
+    println!("{}", info);
+    println!("================================================================================");
 
     loop {}
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
-    vga::WRITER.clear_screen();
+pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
+    vga::clear_screen();
     banner::print_banner();
 
     if mb_magic != 0x36d76289 {
@@ -45,7 +37,7 @@ pub unsafe extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
     }
 
     kinfo!("Received multiboot2 information at: {:?}", mb_addr);
-    let boot_info = multiboot2::load(mb_addr).unwrap();
+    let boot_info = unsafe { multiboot2::load(mb_addr).unwrap() };
 
     let memory_map = boot_info.memory_map_tag().unwrap();
     {
@@ -131,12 +123,11 @@ pub unsafe extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         let bg: vga::Color = row.into();
         let fg = bg.inverse();
 
-        vga::WRITER.set_foreground(fg).set_background(bg);
+        vga::set_colors((fg, bg));
         print!(" {:?} + {:?} ", fg, bg);
     }
-    vga::WRITER
-        .set_foreground(vga::Color::White)
-        .set_background(vga::Color::Black);
+
+    vga::set_colors((vga::Color::White, vga::Color::Black));
 
     todo!("do things");
 }
