@@ -8,6 +8,7 @@ mod misc;
 mod vga;
 
 use crate::misc::banner;
+use core::arch::asm;
 use core::panic::PanicInfo;
 
 use misc::klog::{kdbg, kinfo};
@@ -23,6 +24,11 @@ fn panic(info: &PanicInfo) -> ! {
     println!("KERNEL PANIC:");
     println!("{}", info);
     println!("================================================================================");
+    println!("Clearing interrupts and halting CPU...");
+
+    unsafe { asm!("hlt") };
+
+    println!("CPU halted, this should never happen!");
 
     loop {}
 }
