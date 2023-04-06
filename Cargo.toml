@@ -13,4 +13,5 @@ panic = "abort"
 panic = "abort"
 
 [dependencies]
+bitflags = "2.0.2"
 multiboot2 = "0.15.1"
