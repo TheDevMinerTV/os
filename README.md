@@ -15,6 +15,9 @@ rustup component add rust-src
 
 ## Resources
 
+- x86 Instructions
+  - https://www.felixcloutier.com/x86
+  - https://en.wikipedia.org/wiki/X86_instruction_listings
 - Paging
   - https://wiki.osdev.org/Paging
   - https://en.wikipedia.org/wiki/Control_register
@@ -22,6 +25,10 @@ rustup component add rust-src
   - https://en.wikipedia.org/wiki/CPUID
   - https://www.felixcloutier.com/x86/cpuid
   - https://c9x.me/x86/html/file_module_x86_id_45.html
+  - https://en.wikichip.org/wiki/amd/cpuid
+- Calling Conventions
+  - https://aaronbloomfield.github.io/pdr/book/x86-32bit-ccc-chapter.pdf
+  - https://en.wikipedia.org/wiki/X86_calling_conventions
 
 ## Bye
 
