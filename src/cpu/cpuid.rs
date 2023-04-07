@@ -185,7 +185,7 @@ pub struct ExtendedInfoAndBits {
 
 bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct ExtendedInfoAndBitsECX: u32 {
+    pub struct ExtendedInfoAndBitsEDX: u32 {
         const fpu = 1 << 0;
         const vme = 1 << 1;
         const de = 1 << 2;
@@ -216,7 +216,7 @@ bitflags! {
     }
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-    pub struct ExtendedInfoAndBitsEDX: u32 {
+    pub struct ExtendedInfoAndBitsECX: u32 {
         const lahf_lm = 1 << 30;
         const cmp_legacy = 1 << 1;
         const svm = 1 << 2;
