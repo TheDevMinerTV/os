@@ -114,12 +114,8 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         )
     };
 
-    kdbg!(
-        "Running on CPU: {}",
-        cpu::BasicCPUIDInfo::read().manufacturer
-    );
-    kdbg!("  {:?}", cpu::advanced_cpuid());
-    kdbg!("  {:?}", cpu::ExtendedCPUIDInfo::read());
+    kdbg!("Running on CPU: {:?}", cpu::cpuid::Basic::read());
+    kdbg!("  {:?}", cpu::cpuid::Extended::read());
 
     let mut frame_allocator =
         mem::AreaFrameAllocator::new(kernel, multiboot, memory_map.memory_areas());
