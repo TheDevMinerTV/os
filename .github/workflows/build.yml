@@ -20,3 +20,9 @@ jobs:
 
       - name: Build ISO
         run: just iso
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ISO
+          path: os.iso
