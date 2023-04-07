@@ -121,7 +121,7 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         mem::AreaFrameAllocator::new(kernel, multiboot, memory_map.memory_areas());
     kdbg!("Initialized frame allocator");
 
-    kinfo!("Color test:");
+    print!("[INFO] Color test: ");
     for row in 0..16 {
         let bg: vga::Color = row.into();
         let fg = bg.inverse();
