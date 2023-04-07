@@ -387,7 +387,7 @@ impl From<[char; 48]> for Brand {
 }
 
 fn string_from_regs(m0: u32, m1: u32, m2: u32) -> [char; 12] {
-    let mut data = ['\0'; 12];
+    let mut data = [' '; 12];
     data[0] = (((m0 >> 0) & 0xFF) as u8) as char;
     data[1] = (((m0 >> 8) & 0xFF) as u8) as char;
     data[2] = (((m0 >> 16) & 0xFF) as u8) as char;
@@ -420,7 +420,7 @@ fn string_from_4_regs(
     m23: u32,
     m33: u32,
 ) -> [char; 48] {
-    let mut data = ['\0'; 48];
+    let mut data = [' '; 48];
     data[0] = (((m01 >> 0) & 0xFF) as u8) as char;
     data[1] = (((m01 >> 8) & 0xFF) as u8) as char;
     data[2] = (((m01 >> 16) & 0xFF) as u8) as char;
