@@ -25,6 +25,7 @@ pub struct Basic {
     pub max_basic_fn: u32,
     pub manufacturer: Manufacturer,
     pub basic_info: Option<BasicInfo>,
+    pub info_and_bits: Option<BasicInfoAndBits>,
 }
 
 impl Basic {
@@ -46,6 +47,11 @@ impl Basic {
             } else {
                 Some(Basic::read_basic_info())
             },
+            info_and_bits: if eax < 2 {
+                None
+            } else {
+                Some(Basic::read_info_and_bits())
+            },
         }
     }
 
@@ -62,14 +68,23 @@ impl Basic {
             stepping: (eax & 0xF) as u8,
         }
     }
+
+    fn read_info_and_bits() -> BasicInfoAndBits {
+        let AnyCPUID { edx, ecx, .. } = do_cpuid(0x1);
+
+        BasicInfoAndBits {
+            edx: BasicInfoAndBitsEDX::from_bits_truncate(edx),
+            ecx: BasicInfoAndBitsECX::from_bits_truncate(ecx),
+        }
+    }
 }
 
 impl core::fmt::Debug for Basic {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(
             f,
-            "{{ max_basic_fn: 0x{:016X}, manufacturer: {}, basic_info: {:?} }}",
-            self.max_basic_fn, self.manufacturer, self.basic_info
+            "{{ max_basic_fn: 0x{:016X}, manufacturer: {}, basic_info: {:?}, info_and_bits: {:?} }}",
+            self.max_basic_fn, self.manufacturer, self.basic_info, self.info_and_bits
         )
     }
 }
@@ -91,6 +106,82 @@ impl core::fmt::Debug for BasicInfo {
             "{{ brand_idx: 0x{:01X}, extended_family: 0x{:02X}, extended_model: 0x{:01X}, type: 0x{:01X}, family: 0x{:01X}, model: 0x{:01X}, stepping: 0x{:01X} }}",
                        self.brand_idx, self.extended_family, self.extended_model, self.type_, self.family, self.model, self.stepping
         )
+    }
+}
+
+#[derive(Debug)]
+pub struct BasicInfoAndBits {
+    edx: BasicInfoAndBitsEDX,
+    ecx: BasicInfoAndBitsECX,
+}
+
+bitflags! {
+    #[derive(Debug)]
+    pub struct BasicInfoAndBitsEDX: u32 {
+        const fpu = 1 << 0;
+        const vme = 1 << 1;
+        const de = 1 << 2;
+        const pse = 1 << 3;
+        const tsc = 1 << 4;
+        const msr = 1 << 5;
+        const pae = 1 << 6;
+        const mce = 1 << 7;
+        const cx8 = 1 << 8;
+        const apic = 1 << 9;
+        const sep = 1 << 11;
+        const mtrr = 1 << 12;
+        const pge = 1 << 13;
+        const mca = 1 << 14;
+        const cmov = 1 << 15;
+        const pat = 1 << 16;
+        const pse36 = 1 << 17;
+        const psn = 1 << 18;
+        const clfsh = 1 << 19;
+        const ds = 1 << 21;
+        const acpi = 1 << 22;
+        const mmx = 1 << 23;
+        const fxsr = 1 << 24;
+        const sse = 1 << 25;
+        const sse2 = 1 << 26;
+        const ss = 1 << 27;
+        const htt = 1 << 28;
+        const tm = 1 << 29;
+        const pbe = 1 << 31;
+    }
+
+    #[derive(Debug)]
+    pub struct BasicInfoAndBitsECX: u32 {
+        const sse3 = 1 << 0;
+        const pclmulqdq = 1 << 1;
+        const dtes64 = 1 << 2;
+        const monitor = 1 << 3;
+        const ds_cpl = 1 << 4;
+        const vmx = 1 << 5;
+        const smx = 1 << 6;
+        const est = 1 << 7;
+        const tm2 = 1 << 8;
+        const ssse3 = 1 << 9;
+        const cnxt_id = 1 << 10;
+        const sdbg = 1 << 11;
+        const fma = 1 << 12;
+        const cmpxchg16b = 1 << 13;
+        const xtpr = 1 << 14;
+        const pdcm = 1 << 15;
+        const pcid = 1 << 17;
+        const dca = 1 << 18;
+        const sse4_1 = 1 << 19;
+        const sse4_2 = 1 << 20;
+        const x2apic = 1 << 21;
+        const movbe = 1 << 22;
+        const popcnt = 1 << 23;
+        const tsc_deadline = 1 << 24;
+        const aes = 1 << 25;
+        const xsave = 1 << 26;
+        const osxsave = 1 << 27;
+        const avx = 1 << 28;
+        const f16c = 1 << 29;
+        const rdrand = 1 << 30;
+        const hypervisor = 1 << 31;
     }
 }
 
