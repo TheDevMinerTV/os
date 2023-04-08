@@ -15,3 +15,5 @@ panic = "abort"
 [dependencies]
 bitflags = "2.0.2"
 multiboot2 = "0.15.1"
+strum = { version = "0.24.1", default-features = false }
+strum_macros = "0.24.3"

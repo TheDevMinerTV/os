@@ -12,6 +12,7 @@ use core::arch::asm;
 use core::panic::PanicInfo;
 
 use misc::klog::{kdbg, kinfo};
+use strum::IntoEnumIterator;
 use vga::{print, println};
 
 #[panic_handler]
@@ -173,15 +174,15 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         mem::AreaFrameAllocator::new(kernel, multiboot, memory_map.memory_areas());
     kdbg!("Initialized frame allocator");
 
-    print!("[INFO] Color test: ");
-    for row in 0..16 {
-        let bg: vga::Color = row.into();
-        let fg = bg.inverse();
+    vga::restore_colors(|| {
+        print!("[INFO] Color test: ");
+        for bg in vga::Color::iter() {
+            let fg = bg.inverse();
 
-        vga::set_colors((fg, bg));
-        print!(" {:?} + {:?} ", fg, bg);
-    }
-    vga::set_colors((vga::Color::White, vga::Color::Black));
+            vga::set_colors((fg, bg));
+            print!(" {:?} + {:?} ", fg, bg);
+        }
+    });
     println!();
 
     todo!("do things");

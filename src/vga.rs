@@ -1,4 +1,5 @@
 use core::fmt;
+use strum_macros::EnumIter;
 
 static mut WRITER: VgaBufferWriter = VgaBufferWriter::new();
 
@@ -43,8 +44,12 @@ pub fn set_coords(x: usize, y: usize) -> &'static mut VgaBufferWriter {
     unsafe { WRITER.set_coords(x, y) }
 }
 
+pub fn restore_colors<T>(f: impl FnOnce() -> T) -> T {
+    unsafe { WRITER.restore_colors(f) }
+}
+
 #[allow(dead_code)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, EnumIter)]
 #[repr(u8)]
 pub enum Color {
     Black = 0,
@@ -77,37 +82,13 @@ impl Color {
             Color::Brown => Color::White,
             Color::LightGray => Color::Black,
             Color::DarkGray => Color::White,
-            Color::LightBlue => Color::Black,
+            Color::LightBlue => Color::White,
             Color::LightGreen => Color::Black,
             Color::LightCyan => Color::Black,
             Color::LightRed => Color::Black,
             Color::Pink => Color::Black,
             Color::Yellow => Color::Black,
             Color::White => Color::Black,
-        }
-    }
-}
-
-impl From<u8> for Color {
-    fn from(i: u8) -> Color {
-        match i {
-            0 => Color::Black,
-            1 => Color::Blue,
-            2 => Color::Green,
-            3 => Color::Cyan,
-            4 => Color::Red,
-            5 => Color::Magenta,
-            6 => Color::Brown,
-            7 => Color::LightGray,
-            8 => Color::DarkGray,
-            9 => Color::LightBlue,
-            10 => Color::LightGreen,
-            11 => Color::LightCyan,
-            12 => Color::LightRed,
-            13 => Color::Pink,
-            14 => Color::Yellow,
-            15 => Color::White,
-            _ => Color::White,
         }
     }
 }
@@ -308,6 +289,16 @@ impl VgaBufferWriter {
         self.pos_x = x;
         self.pos_y = y;
         self
+    }
+
+    pub fn restore_colors<T>(&mut self, f: impl FnOnce() -> T) -> T {
+        let (foreground, background) = self.colors();
+
+        let v = f();
+
+        self.set_colors((foreground, background));
+
+        v
     }
 }
 
