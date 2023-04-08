@@ -18,7 +18,7 @@ iso: image
   grub-mkrescue -o os.iso iso -d /usr/lib/grub/i386-pc
 
 boot: iso
-  qemu-system-i386 -cdrom os.iso -m 512M -display sdl -cpu pentium3-v1
+  qemu-system-i386 -cdrom os.iso -m 512M -M q35 -display sdl -cpu pentium3-v1
 
 clean:
   rm -rf *.o *.bin iso/os.bin os.iso tmp
