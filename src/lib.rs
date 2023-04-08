@@ -114,8 +114,60 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         )
     };
 
-    kdbg!("Running on CPU: {:?}", cpu::cpuid::Basic::read());
-    kdbg!("  {:?}", cpu::cpuid::Extended::read());
+    {
+        let basic = cpu::cpuid::Basic::read();
+        let extended = cpu::cpuid::Extended::read();
+
+        kdbg!("CPU Information:");
+        kdbg!("  Manufacturer: {}", basic.manufacturer);
+
+        if let Some(brand) = extended.brand {
+            kdbg!("  Brand: {}", brand);
+        }
+
+        if let Some(vendor) = extended.vendor {
+            kdbg!("  Vendor: {}", vendor);
+        }
+
+        if let Some(info) = basic.basic_info {
+            kdbg!("  Info:");
+            kdbg!("    Type: {:?}", info.type_);
+            kdbg!(
+                "    Family: {:01X}h ({:02X}h)",
+                info.family,
+                info.extended_family
+            );
+            kdbg!(
+                "    Model: {:01X}h ({:01X}h)",
+                info.model,
+                info.extended_model
+            );
+            kdbg!("    Stepping: {}", info.stepping);
+        }
+
+        print!("[DBG]    Capabilities: ");
+        if let Some(info) = basic.info_and_bits {
+            for (bit, ..) in info.edx.iter_names() {
+                print!("{} ", bit);
+            }
+            for (bit, ..) in info.ecx.iter_names() {
+                print!("{} ", bit);
+            }
+        }
+        if let Some(info) = extended.info_and_bits {
+            for (bit, ..) in info.edx.iter_names() {
+                print!("{} ", bit);
+            }
+            for (bit, ..) in info.ecx.iter_names() {
+                print!("{} ", bit);
+            }
+        }
+        println!();
+
+        if let Some(svm_revision) = extended.svm_revision {
+            kdbg!("  SVM Revision: {}", svm_revision);
+        }
+    }
 
     let mut frame_allocator =
         mem::AreaFrameAllocator::new(kernel, multiboot, memory_map.memory_areas());

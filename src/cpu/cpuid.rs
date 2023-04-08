@@ -62,7 +62,7 @@ impl Basic {
             brand_idx: (ebx & 0xFF) as u8,
             extended_family: ((eax >> 20) & 0xFF) as u8,
             extended_model: ((eax >> 16) & 0xF) as u8,
-            type_: ((eax >> 12) & 0x3) as u8,
+            type_: (((eax >> 12) & 0x3) as u8).into(),
             family: ((eax >> 8) & 0xF) as u8,
             model: ((eax >> 4) & 0xF) as u8,
             stepping: (eax & 0xF) as u8,
@@ -89,11 +89,30 @@ impl core::fmt::Debug for Basic {
     }
 }
 
+#[derive(Debug)]
+pub enum Type {
+    OEMCPU,
+    IntelOverdrive,
+    DualCPU,
+    Reserved,
+}
+
+impl From<u8> for Type {
+    fn from(t: u8) -> Self {
+        match t {
+            0 => Type::OEMCPU,
+            1 => Type::IntelOverdrive,
+            2 => Type::DualCPU,
+            _ => Type::Reserved,
+        }
+    }
+}
+
 pub struct BasicInfo {
     pub brand_idx: u8,
     pub extended_family: u8,
     pub extended_model: u8,
-    pub type_: u8,
+    pub type_: Type,
     pub family: u8,
     pub model: u8,
     pub stepping: u8,
@@ -103,7 +122,7 @@ impl core::fmt::Debug for BasicInfo {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(
             f,
-            "{{ brand_idx: 0x{:01X}, extended_family: 0x{:02X}, extended_model: 0x{:01X}, type: 0x{:01X}, family: 0x{:01X}, model: 0x{:01X}, stepping: 0x{:01X} }}",
+            "{{ brand_idx: 0x{:01X}, extended_family: 0x{:02X}, extended_model: 0x{:01X}, type: {:?}, family: 0x{:01X}, model: 0x{:01X}, stepping: 0x{:01X} }}",
                        self.brand_idx, self.extended_family, self.extended_model, self.type_, self.family, self.model, self.stepping
         )
     }
@@ -111,8 +130,8 @@ impl core::fmt::Debug for BasicInfo {
 
 #[derive(Debug)]
 pub struct BasicInfoAndBits {
-    edx: BasicInfoAndBitsEDX,
-    ecx: BasicInfoAndBitsECX,
+    pub edx: BasicInfoAndBitsEDX,
+    pub ecx: BasicInfoAndBitsECX,
 }
 
 bitflags! {
