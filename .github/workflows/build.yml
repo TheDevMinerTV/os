@@ -21,8 +21,13 @@ jobs:
       - name: Build ISO
         run: just iso
 
+      - name: Write Git commit into file
+        run: echo ${{ github.sha }} > commit
+
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: ISO
-          path: os.iso
+          path: |
+            os.iso
+            commit
