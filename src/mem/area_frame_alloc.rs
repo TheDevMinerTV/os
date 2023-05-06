@@ -13,39 +13,37 @@ pub struct AreaFrameAllocator<'a> {
 }
 
 impl<'a> FrameAllocator for AreaFrameAllocator<'a> {
-    fn allocate_frame(&mut self) -> Option<Frame> {
-        if let Some(area) = self.current_area {
-            let frame = Frame {
-                number: self.next_free_frame.number,
+    fn allocate(&mut self) -> Option<Frame> {
+        let area = self.current_area?;
+
+        let frame = Frame {
+            number: self.next_free_frame.number,
+        };
+
+        let current_area_last_frame = {
+            let address = area.start_address() + area.size() - 1;
+            Frame::containing_address(address as usize)
+        };
+
+        if frame > current_area_last_frame {
+            self.choose_next_area();
+        } else if frame >= self.kernel_start && frame <= self.kernel_end {
+            self.next_free_frame = Frame {
+                number: self.kernel_end.number + 1,
             };
-
-            let current_area_last_frame = {
-                let address = area.start_address() + area.size() - 1;
-                Frame::containing_address(address as usize)
+        } else if frame >= self.multiboot_start && frame <= self.multiboot_end {
+            self.next_free_frame = Frame {
+                number: self.multiboot_end.number + 1,
             };
-
-            if frame > current_area_last_frame {
-                self.choose_next_area();
-            } else if frame >= self.kernel_start && frame <= self.kernel_end {
-                self.next_free_frame = Frame {
-                    number: self.kernel_end.number + 1,
-                };
-            } else if frame >= self.multiboot_start && frame <= self.multiboot_end {
-                self.next_free_frame = Frame {
-                    number: self.multiboot_end.number + 1,
-                };
-            } else {
-                self.next_free_frame.number += 1;
-                return Some(frame);
-            }
-
-            self.allocate_frame()
         } else {
-            None
+            self.next_free_frame.number += 1;
+            return Some(frame);
         }
+
+        self.allocate()
     }
 
-    fn deallocate_frame(&mut self, _frame: Frame) {
+    fn deallocate(&mut self, _frame: Frame) {
         unimplemented!()
     }
 }
