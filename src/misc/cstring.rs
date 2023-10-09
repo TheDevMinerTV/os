@@ -5,7 +5,7 @@ pub fn fix_zeroterminated_string(data: &mut [char]) {
             first_zero = Some(i);
         }
 
-        if let Some(_) = first_zero {
+        if first_zero.is_some() {
             *d = ' ';
         }
     }

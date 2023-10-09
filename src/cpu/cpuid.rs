@@ -90,6 +90,7 @@ impl core::fmt::Debug for Basic {
 }
 
 #[derive(Debug)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Type {
     OEMCPU,
     IntelOverdrive,
@@ -248,7 +249,7 @@ impl Extended {
     }
 
     fn read_info_and_bits() -> ExtendedInfoAndBits {
-        let AnyCPUID { eax, ebx, ecx, edx } = do_cpuid(0x80000001);
+        let AnyCPUID { ecx, edx, .. } = do_cpuid(0x80000001);
 
         ExtendedInfoAndBits {
             ecx: ExtendedInfoAndBitsECX::from_bits_truncate(ecx),
@@ -407,15 +408,15 @@ impl From<[char; 48]> for Brand {
 
 fn string_from_regs(m0: u32, m1: u32, m2: u32) -> [char; 12] {
     let mut data = [' '; 12];
-    data[0] = (((m0 >> 0) & 0xFF) as u8) as char;
+    data[0] = ((m0 & 0xFF) as u8) as char;
     data[1] = (((m0 >> 8) & 0xFF) as u8) as char;
     data[2] = (((m0 >> 16) & 0xFF) as u8) as char;
     data[3] = (((m0 >> 24) & 0xFF) as u8) as char;
-    data[4] = (((m1 >> 0) & 0xFF) as u8) as char;
+    data[4] = ((m1 & 0xFF) as u8) as char;
     data[5] = (((m1 >> 8) & 0xFF) as u8) as char;
     data[6] = (((m1 >> 16) & 0xFF) as u8) as char;
     data[7] = (((m1 >> 24) & 0xFF) as u8) as char;
-    data[8] = (((m2 >> 0) & 0xFF) as u8) as char;
+    data[8] = ((m2 & 0xFF) as u8) as char;
     data[9] = (((m2 >> 8) & 0xFF) as u8) as char;
     data[10] = (((m2 >> 16) & 0xFF) as u8) as char;
     data[11] = (((m2 >> 24) & 0xFF) as u8) as char;
@@ -425,6 +426,7 @@ fn string_from_regs(m0: u32, m1: u32, m2: u32) -> [char; 12] {
     data
 }
 
+#[allow(clippy::too_many_arguments)]
 fn string_from_4_regs(
     m01: u32,
     m11: u32,
@@ -440,51 +442,51 @@ fn string_from_4_regs(
     m33: u32,
 ) -> [char; 48] {
     let mut data = [' '; 48];
-    data[0] = (((m01 >> 0) & 0xFF) as u8) as char;
+    data[0] = ((m01 & 0xFF) as u8) as char;
     data[1] = (((m01 >> 8) & 0xFF) as u8) as char;
     data[2] = (((m01 >> 16) & 0xFF) as u8) as char;
     data[3] = (((m01 >> 24) & 0xFF) as u8) as char;
-    data[4] = (((m11 >> 0) & 0xFF) as u8) as char;
+    data[4] = ((m11 & 0xFF) as u8) as char;
     data[5] = (((m11 >> 8) & 0xFF) as u8) as char;
     data[6] = (((m11 >> 16) & 0xFF) as u8) as char;
     data[7] = (((m11 >> 24) & 0xFF) as u8) as char;
-    data[8] = (((m21 >> 0) & 0xFF) as u8) as char;
+    data[8] = ((m21 & 0xFF) as u8) as char;
     data[9] = (((m21 >> 8) & 0xFF) as u8) as char;
     data[10] = (((m21 >> 16) & 0xFF) as u8) as char;
     data[11] = (((m21 >> 24) & 0xFF) as u8) as char;
-    data[12] = (((m31 >> 0) & 0xFF) as u8) as char;
+    data[12] = ((m31 & 0xFF) as u8) as char;
     data[13] = (((m31 >> 8) & 0xFF) as u8) as char;
     data[14] = (((m31 >> 16) & 0xFF) as u8) as char;
     data[15] = (((m31 >> 24) & 0xFF) as u8) as char;
-    data[16] = (((m02 >> 0) & 0xFF) as u8) as char;
+    data[16] = ((m02 & 0xFF) as u8) as char;
     data[17] = (((m02 >> 8) & 0xFF) as u8) as char;
     data[18] = (((m02 >> 16) & 0xFF) as u8) as char;
     data[19] = (((m02 >> 24) & 0xFF) as u8) as char;
-    data[20] = (((m12 >> 0) & 0xFF) as u8) as char;
+    data[20] = ((m12 & 0xFF) as u8) as char;
     data[21] = (((m12 >> 8) & 0xFF) as u8) as char;
     data[22] = (((m12 >> 16) & 0xFF) as u8) as char;
     data[23] = (((m12 >> 24) & 0xFF) as u8) as char;
-    data[24] = (((m22 >> 0) & 0xFF) as u8) as char;
+    data[24] = ((m22 & 0xFF) as u8) as char;
     data[25] = (((m22 >> 8) & 0xFF) as u8) as char;
     data[26] = (((m22 >> 16) & 0xFF) as u8) as char;
     data[27] = (((m22 >> 24) & 0xFF) as u8) as char;
-    data[28] = (((m32 >> 0) & 0xFF) as u8) as char;
+    data[28] = ((m32 & 0xFF) as u8) as char;
     data[29] = (((m32 >> 8) & 0xFF) as u8) as char;
     data[30] = (((m32 >> 16) & 0xFF) as u8) as char;
     data[31] = (((m32 >> 24) & 0xFF) as u8) as char;
-    data[32] = (((m03 >> 0) & 0xFF) as u8) as char;
+    data[32] = ((m03 & 0xFF) as u8) as char;
     data[33] = (((m03 >> 8) & 0xFF) as u8) as char;
     data[34] = (((m03 >> 16) & 0xFF) as u8) as char;
     data[35] = (((m03 >> 24) & 0xFF) as u8) as char;
-    data[36] = (((m13 >> 0) & 0xFF) as u8) as char;
+    data[36] = ((m13 & 0xFF) as u8) as char;
     data[37] = (((m13 >> 8) & 0xFF) as u8) as char;
     data[38] = (((m13 >> 16) & 0xFF) as u8) as char;
     data[39] = (((m13 >> 24) & 0xFF) as u8) as char;
-    data[40] = (((m23 >> 0) & 0xFF) as u8) as char;
+    data[40] = ((m23 & 0xFF) as u8) as char;
     data[41] = (((m23 >> 8) & 0xFF) as u8) as char;
     data[42] = (((m23 >> 16) & 0xFF) as u8) as char;
     data[43] = (((m23 >> 24) & 0xFF) as u8) as char;
-    data[44] = (((m33 >> 0) & 0xFF) as u8) as char;
+    data[44] = ((m33 & 0xFF) as u8) as char;
     data[45] = (((m33 >> 8) & 0xFF) as u8) as char;
     data[46] = (((m33 >> 16) & 0xFF) as u8) as char;
     data[47] = (((m33 >> 24) & 0xFF) as u8) as char;
