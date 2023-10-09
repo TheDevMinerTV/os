@@ -12,6 +12,7 @@ use core::arch::asm;
 use core::panic::PanicInfo;
 
 use misc::klog::{kdbg, kinfo};
+use multiboot2::BootInformation;
 use strum::IntoEnumIterator;
 use vga::{print, println};
 
@@ -44,7 +45,8 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
     }
 
     kinfo!("Received multiboot2 information at: {:?}", mb_addr);
-    let boot_info = unsafe { multiboot2::load(mb_addr).unwrap() };
+    let boot_info_ptr = (mb_addr as *const u8).cast();
+    let boot_info = unsafe { BootInformation::load(boot_info_ptr).unwrap() };
 
     let memory_map = boot_info.memory_map_tag().unwrap();
     {
@@ -53,6 +55,7 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         kdbg!("Available memory areas:");
         for area in memory_map
             .memory_areas()
+            .iter()
             .filter(|a| a.typ() == multiboot2::MemoryAreaType::Available)
         {
             kdbg!(
@@ -69,10 +72,10 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
     }
 
     let (kernel, multiboot) = {
-        let elf_sections = boot_info.elf_sections_tag().unwrap();
+        let elf_sections = boot_info.elf_sections().unwrap();
 
         kdbg!("ELF sections:");
-        for section in elf_sections.sections() {
+        for section in elf_sections.clone() {
             kdbg!(
                 "  0x{:08X} - 0x{:08X} ({} bytes, {:?})",
                 section.start_address(),
@@ -83,15 +86,11 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         }
 
         let kernel_start = elf_sections
-            .sections()
+            .clone()
             .map(|s| s.start_address())
             .min()
             .unwrap();
-        let kernel_end = elf_sections
-            .sections()
-            .map(|s| s.end_address())
-            .max()
-            .unwrap();
+        let kernel_end = elf_sections.map(|s| s.end_address()).max().unwrap();
 
         let mb_start = mb_addr;
         let mb_end = mb_addr + boot_info.total_size();
@@ -111,7 +110,7 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
 
         (
             (kernel_start as usize, kernel_end as usize),
-            (mb_start as usize, mb_end as usize),
+            (mb_start, mb_end),
         )
     };
 
@@ -170,7 +169,7 @@ pub extern "C" fn _rust_main(mb_magic: usize, mb_addr: usize) {
         }
     }
 
-    let mut frame_allocator =
+    let frame_allocator =
         mem::AreaFrameAllocator::new(kernel, multiboot, memory_map.memory_areas());
     kdbg!("Initialized frame allocator");
 
