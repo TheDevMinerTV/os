@@ -16,7 +16,7 @@ jobs:
       - uses: extractions/setup-just@v2
 
       - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y xorriso grub-common qemu grub-pc binutils-i686-linux-gnu nasm
+        run: sudo apt-get update && sudo apt-get install -y xorriso grub-common qemu-system qemu-utils grub-pc binutils-i686-linux-gnu nasm
 
       - name: Build ISO
         run: just iso
